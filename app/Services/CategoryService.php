@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Services\CategoryService;
+use Exception;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
     protected CategoryService $svc;
 
+    // Inject CategoryService melalui Constructor
     public function __construct(CategoryService $svc)
     {
         $this->svc = $svc;
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
         return response()->json([
             'status' => 'success',
@@ -24,10 +27,9 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function store(StoreCategoryRequest $req)
+    public function store(StoreCategoryRequest $req): JsonResponse
     {
         $cat = $this->svc->create($req->validated());
-
         return response()->json([
             'status' => 'success',
             'data' => $cat,
@@ -35,17 +37,16 @@ class CategoryController extends Controller
         ], 201);
     }
 
-    public function show($id)
+    public function show($id): JsonResponse
     {
         try {
             $cat = $this->svc->find($id);
-
             return response()->json([
                 'status' => 'success',
                 'data' => $cat,
                 'message' => 'Berhasil menarik satu data kategori'
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'data' => null,
@@ -54,10 +55,9 @@ class CategoryController extends Controller
         }
     }
 
-    public function update(UpdateCategoryRequest $req, $id)
+    public function update(UpdateCategoryRequest $req, $id): JsonResponse
     {
         $cat = $this->svc->update($id, $req->validated());
-
         return response()->json([
             'status' => 'success',
             'data' => $cat,
@@ -65,14 +65,13 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $this->svc->delete($id);
-
         return response()->json([
             'status' => 'success',
             'data' => null,
             'message' => 'Kategori berhasil dihapus'
-        ], 204);
+        ]);
     }
 }
