@@ -6,6 +6,7 @@ use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Services\ItemService;
 use App\Http\Controllers\Api\BaseController;
+use Illuminate\Http\Request;
 use Exception;
 
 class ItemController extends BaseController
@@ -17,17 +18,27 @@ class ItemController extends BaseController
         $this->svc = $svc;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $items = $this->svc
+            ->all()
+            ->filter(function ($item) use ($request) {
+                return !$request->category_id
+                    || $item->category_id == $request->category_id;
+            })
+            ->values();
+
         return $this->success(
-            $this->svc->all(),
+            $items,
             'Berhasil menarik semua data Item'
         );
     }
 
     public function store(StoreItemRequest $req)
     {
-        $item = $this->svc->create($req->validated());
+        $item = $this->svc->create(
+            $req->validated()
+        );
 
         return $this->success(
             $item,
@@ -39,6 +50,7 @@ class ItemController extends BaseController
     public function show($id)
     {
         try {
+
             $item = $this->svc->find($id);
 
             return $this->success(
