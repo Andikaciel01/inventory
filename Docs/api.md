@@ -291,3 +291,6 @@ Menghapus kategori.
 
 Note:
 Code review workflow implemented using two Github accounts
+
+Note:
+This documentation has been updated after review feedback
