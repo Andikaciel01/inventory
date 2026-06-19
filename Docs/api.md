@@ -288,3 +288,6 @@ DELETE /categories/{id}
 Description:
 
 Menghapus kategori.
+
+Note:
+Code review workflow implemented using two Github accounts
