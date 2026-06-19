@@ -293,4 +293,4 @@ Note:
 Code review workflow implemented using two Github accounts
 
 Note:
-This update is used for github review workflow simulation
+This documentation has been updated after review feedback
