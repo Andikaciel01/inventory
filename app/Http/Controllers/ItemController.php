@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Services\ItemService;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use Exception;
@@ -34,18 +35,20 @@ class ItemController extends BaseController
         );
     }
 
-    public function store(StoreItemRequest $req)
-    {
-        $item = $this->svc->create(
-            $req->validated()
-        );
+   public function store(StoreItemRequest $req)
+{
+    
 
-        return $this->success(
-            $item,
-            'Item berhasil dibuat',
-            201
-        );
-    }
+    $item = $this->svc->create(
+        $req->validated()
+    );
+
+    return $this->success(
+        $item,
+        'Item berhasil dibuat',
+        201
+    );
+}
 
     public function show($id)
     {
@@ -81,13 +84,19 @@ class ItemController extends BaseController
     }
 
     public function destroy($id)
-    {
-        $this->svc->delete($id);
-
-        return $this->success(
-            null,
-            'Item berhasil dihapus',
-            204
-        );
+{
+    if (Auth::user()->role !== 'admin') {
+        return response()->json([
+            'status' => false,
+            'message' => 'Forbidden'
+        ], 403);
     }
+
+    $this->svc->delete($id);
+
+    return response()->json(
+        null,
+        204
+    );
+}
 }
